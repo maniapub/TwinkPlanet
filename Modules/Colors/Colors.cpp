@@ -1,12 +1,33 @@
 #define NOMINMAX
 #pragma execution_character_set("utf-8")
 #include "Colors.h"
-#include <ShlObj.h>
 #include <objbase.h>
 #include <algorithm>
 #include <vector>
 #include "../../TwinkToast/TwinkToast.h"
+#include "../../Utils.h"
+#include "../../Resource.h"
 #pragma comment(lib, "windowscodecs.lib")
+
+// Wraps a resource's raw bytes in a WIC-readable stream, so the decoder below can read
+// tmcolors.png straight out of the DLL's own memory instead of a file on disk.
+static bool CreateWicStreamFromResource(IWICImagingFactory* Factory, int ResourceId, IWICStream** OutStream)
+{
+    const unsigned char* Data = nullptr;
+    size_t Size = 0;
+    if (!LoadEmbeddedResource(ResourceId, &Data, &Size)) return false;
+
+    IWICStream* Stream = nullptr;
+    if (FAILED(Factory->CreateStream(&Stream))) return false;
+    if (FAILED(Stream->InitializeFromMemory((BYTE*)Data, (DWORD)Size)))
+    {
+        Stream->Release();
+        return false;
+    }
+
+    *OutStream = Stream;
+    return true;
+}
 
 static IDirect3DTexture9* ColorsMakeTex(IDirect3DDevice9* dev,
                                          const BYTE* bgra, UINT w, UINT h)
@@ -42,23 +63,28 @@ void ColorsModule::Load(IDirect3DDevice9* dev)
         return;
     }
 
-    // Load tmcolors.png from Documents\TwinkPlanet\media\ - same disk-load pattern already
-    // proven by Blahaj's shark.gif (no embedded resource in this fork).
-    IWICBitmapDecoder* decoder = nullptr;
-    char docsPath[MAX_PATH] = {};
-    SHGetFolderPathA(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, docsPath);
-    std::string u8path = std::string(docsPath) + "\\TwinkPlanet\\media\\tmcolors.png";
-    int wn = MultiByteToWideChar(CP_ACP, 0, u8path.c_str(), -1, nullptr, 0);
-    std::wstring wpath(wn - 1, L'\0');
-    MultiByteToWideChar(CP_ACP, 0, u8path.c_str(), -1, wpath.data(), wn);
-
-    if (FAILED(factory->CreateDecoderFromFilename(wpath.c_str(), nullptr,
-               GENERIC_READ, WICDecodeMetadataCacheOnLoad, &decoder)))
+    // tmcolors.png is baked into the DLL as an RCDATA resource (see Twinkie.rc) rather than
+    // loaded from Documents\TwinkPlanet\media\ - a fresh install no longer needs that file placed
+    // there manually.
+    IWICStream* stream = nullptr;
+    if (!CreateWicStreamFromResource(factory, IDR_MEDIA_TMCOLORS, &stream))
     {
-        m_ErrorMsg = "tmcolors.png not found";
-        Logger->PrintErrorArgs("[TM Colors] tmcolors.png missing at {}", u8path);
-        TwinkToast::Get().Push("[TM Colors] Place tmcolors.png in Documents\\TwinkPlanet\\media\\",
+        m_ErrorMsg = "tmcolors.png resource missing";
+        Logger->PrintError("[TM Colors] Embedded tmcolors.png resource could not be loaded.");
+        TwinkToast::Get().Push("[TM Colors] Embedded tmcolors.png resource could not be loaded.",
                                8.f, { 1.f, 0.6f, 0.2f, 1.f });
+        factory->Release();
+        if (comOwn) CoUninitialize();
+        return;
+    }
+
+    IWICBitmapDecoder* decoder = nullptr;
+    HRESULT decodeHr = factory->CreateDecoderFromStream(stream, nullptr, WICDecodeMetadataCacheOnLoad, &decoder);
+    stream->Release();
+    if (FAILED(decodeHr))
+    {
+        m_ErrorMsg = "Failed to decode tmcolors.png";
+        Logger->PrintError("[TM Colors] Failed to decode embedded tmcolors.png resource.");
         factory->Release();
         if (comOwn) CoUninitialize();
         return;

@@ -195,20 +195,18 @@ static void __fastcall ChangeStateDetour(void* self, void* /*unusedEdx*/, unsign
     if (s_OriginalChangeState) s_OriginalChangeState(self, newState, sendServerInfo);
 }
 
-// Same RVA ForeverRPC hooks (its CHANGE_STATE_RVA). Only patched once, and only if that address
-// actually looks like readable/executable code first - if the offset doesn't match this game
-// build, this quietly no-ops instead of patching over the wrong bytes.
+// Disabled - a user got stuck on the profile-select screen shortly after this was added, which is
+// exactly the symptom of patching the wrong function: IsReadableMemory() only confirms the RVA
+// points at *some* valid code, not that it's actually GameNetwork::ChangeState in this specific
+// game build (the same RVA-drift problem already caught once this session for the server-name
+// offset, but this time the miss is a code patch instead of a read - far higher blast radius, since
+// a wrong hook can corrupt any state transition that happens to run through whatever it actually
+// landed on). GameStateName() below still works fine without it via the direct memory reads;
+// {game_state_name} just quietly stays empty on the rare case those come back empty too, instead of
+// falling back to a hook that isn't confirmed safe.
 static void InstallGameStateHookOnce(TwinkTrackmania* twinkie)
 {
-    bool expected = false;
-    if (!s_GameStateHookInstalled.compare_exchange_strong(expected, true)) return;
-
-    void* target = (void*)(twinkie->GetExeBaseAddr() + 0x5B23F0);
-    if (!twinkie->IsReadableMemory((uintptr_t)target, 16)) return;
-
-    MH_Initialize(); // idempotent - kiero's own DX9 hook already calls this too
-    if (MH_CreateHook(target, (void*)&ChangeStateDetour, (void**)&s_OriginalChangeState) != MH_OK) return;
-    MH_EnableHook(target);
+    (void)twinkie;
 }
 
 // Richer than the plain playing/not-playing check elsewhere in this file - distinguishes menus,

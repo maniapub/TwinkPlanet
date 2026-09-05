@@ -1,5 +1,7 @@
 #include "TwinkUi.h"
 #include "../imgui-dx9/imgui_internal.h"
+#include "../Utils.h"
+#include "../Resource.h"
 #include <shellapi.h>
 #include <winhttp.h>
 #include <fstream>
@@ -209,6 +211,19 @@ void TwinkUi::PatchFullscreenWindowed(HWND WindowHandle)
     }
 }
 
+// Loads one font from an RCDATA resource baked into this DLL (see Twinkie.rc) instead of a file
+// on disk - FontDataOwnedByAtlas is forced false since the returned pointer is a Win32 resource
+// (valid for the module's whole lifetime), not something ImGui should ever try to free.
+static ImFont* AddEmbeddedFont(ImFontAtlas* Atlas, int ResourceId, float SizePixels, ImFontConfig* Cfg)
+{
+    const unsigned char* Data = nullptr;
+    size_t Size = 0;
+    if (!LoadEmbeddedResource(ResourceId, &Data, &Size)) return nullptr;
+
+    Cfg->FontDataOwnedByAtlas = false;
+    return Atlas->AddFontFromMemoryTTF((void*)Data, (int)Size, SizePixels, Cfg);
+}
+
 void TwinkUi::InitFonts(ImGuiIO& ImIo)
 {
     bool SkipIconsMono = false;
@@ -218,11 +233,7 @@ void TwinkUi::InitFonts(ImGuiIO& ImIo)
     ImFontConfig MonoCfg;
     MonoCfg.Flags |= ImFontFlags_NoLoadError;
 
-    std::string DocsFolder = GetDocumentsFolder();
-
-    Logger.PrintInternalArgs("Documents are at: {}", DocsFolder);
-    Logger.PrintInternalArgs("Expected path of Fonts is at: {}", (DocsFolder + "\\TwinkPlanet\\Fonts\\CascadiaMono.ttf"));
-    FontMono = ImIo.Fonts->AddFontFromFileTTF((DocsFolder + "\\TwinkPlanet\\Fonts\\CascadiaMono.ttf").c_str(), 14.f * UiScale, &MonoCfg);
+    FontMono = AddEmbeddedFont(ImIo.Fonts, IDR_FONT_CASCADIAMONO, 14.f * UiScale, &MonoCfg);
 
     if (FontMono)
     {
@@ -245,9 +256,7 @@ void TwinkUi::InitFonts(ImGuiIO& ImIo)
         MonoIconCfg.GlyphMinAdvanceX = MonoIconFontSize;
         MonoIconCfg.Flags |= ImFontFlags_NoLoadError;
 
-        Logger.PrintInternalArgs("Documents are at: {}", DocsFolder);
-        Logger.PrintInternalArgs("Expected path of Fonts is at: {}", (DocsFolder + "\\TwinkPlanet\\Fonts\\ManiaIcons.ttf"));
-        auto FontManiaIconsMono = ImIo.Fonts->AddFontFromFileTTF((DocsFolder + "\\TwinkPlanet\\Fonts\\ManiaIcons.ttf").c_str(), MonoIconFontSize, &MonoIconCfg);
+        auto FontManiaIconsMono = AddEmbeddedFont(ImIo.Fonts, IDR_FONT_MANIAICONS, MonoIconFontSize, &MonoIconCfg);
 
         if (FontManiaIconsMono)
         {
@@ -263,9 +272,7 @@ void TwinkUi::InitFonts(ImGuiIO& ImIo)
     BricolageGrotesqueCfg.MergeMode = false;
     BricolageGrotesqueCfg.Flags |= ImFontFlags_NoLoadError;
 
-    Logger.PrintInternalArgs("Documents are at: {}", DocsFolder);
-    Logger.PrintInternalArgs("Expected path of Fonts is at: {}", (DocsFolder + "\\TwinkPlanet\\Fonts\\BricolageGrotesque.ttf"));
-    FontBricolageGrotesque = ImIo.Fonts->AddFontFromFileTTF((DocsFolder + "\\TwinkPlanet\\Fonts\\BricolageGrotesque.ttf").c_str(), 14.f * UiScale, &BricolageGrotesqueCfg);
+    FontBricolageGrotesque = AddEmbeddedFont(ImIo.Fonts, IDR_FONT_BRICOLAGEGROTESQUE, 14.f * UiScale, &BricolageGrotesqueCfg);
 
     if (FontBricolageGrotesque)
     {
@@ -288,9 +295,7 @@ void TwinkUi::InitFonts(ImGuiIO& ImIo)
         BricolageGrotesqueIconCfg.GlyphMinAdvanceX = BricolageGrotesqueIconFontSize;
         BricolageGrotesqueIconCfg.Flags |= ImFontFlags_NoLoadError;
 
-        Logger.PrintInternalArgs("Documents are at: {}", DocsFolder);
-        Logger.PrintInternalArgs("Expected path of Fonts is at: {}", (DocsFolder + "\\TwinkPlanet\\Fonts\\ManiaIcons.ttf"));
-        auto FontManiaIconsBricolageGrotesque = ImIo.Fonts->AddFontFromFileTTF((DocsFolder + "\\TwinkPlanet\\Fonts\\ManiaIcons.ttf").c_str(), BricolageGrotesqueIconFontSize, &BricolageGrotesqueIconCfg);
+        auto FontManiaIconsBricolageGrotesque = AddEmbeddedFont(ImIo.Fonts, IDR_FONT_MANIAICONS, BricolageGrotesqueIconFontSize, &BricolageGrotesqueIconCfg);
 
         if (FontManiaIconsBricolageGrotesque)
         {
@@ -306,9 +311,7 @@ void TwinkUi::InitFonts(ImGuiIO& ImIo)
     DroidSansCfg.MergeMode = false;
     DroidSansCfg.Flags |= ImFontFlags_NoLoadError;
 
-    Logger.PrintInternalArgs("Documents are at: {}", DocsFolder);
-    Logger.PrintInternalArgs("Expected path of Fonts is at: {}", (DocsFolder + "\\TwinkPlanet\\Fonts\\DroidSans.ttf"));
-    FontDroidSans = ImIo.Fonts->AddFontFromFileTTF((DocsFolder + "\\TwinkPlanet\\Fonts\\DroidSans.ttf").c_str(), 14.f * UiScale, &DroidSansCfg);
+    FontDroidSans = AddEmbeddedFont(ImIo.Fonts, IDR_FONT_DROIDSANS, 14.f * UiScale, &DroidSansCfg);
 
     if (FontDroidSans)
     {
@@ -331,9 +334,7 @@ void TwinkUi::InitFonts(ImGuiIO& ImIo)
         DroidSansIconCfg.GlyphMinAdvanceX = DroidSansIconFontSize;
         DroidSansIconCfg.Flags |= ImFontFlags_NoLoadError;
 
-        Logger.PrintInternalArgs("Documents are at: {}", DocsFolder);
-        Logger.PrintInternalArgs("Expected path of Fonts is at: {}", (DocsFolder + "\\TwinkPlanet\\Fonts\\ManiaIcons.ttf"));
-        auto FontManiaIconsDroidSans = ImIo.Fonts->AddFontFromFileTTF((DocsFolder + "\\TwinkPlanet\\Fonts\\ManiaIcons.ttf").c_str(), DroidSansIconFontSize, &DroidSansIconCfg);
+        auto FontManiaIconsDroidSans = AddEmbeddedFont(ImIo.Fonts, IDR_FONT_MANIAICONS, DroidSansIconFontSize, &DroidSansIconCfg);
 
         if (FontManiaIconsDroidSans)
         {

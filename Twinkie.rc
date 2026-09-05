@@ -1,0 +1,13 @@
+#include "Resource.h"
+
+// Fonts and media baked directly into the DLL - see Utils.h's LoadEmbeddedResource() for how
+// they're read back out at runtime. Previously these had to be manually placed in
+// Documents\TwinkPlanet\, which silently broke (missing icons, missing images) for anyone who
+// hadn't set that up.
+
+IDR_FONT_CASCADIAMONO       RCDATA "EmbeddedAssets/Fonts/CascadiaMono.ttf"
+IDR_FONT_MANIAICONS         RCDATA "EmbeddedAssets/Fonts/ManiaIcons.ttf"
+IDR_FONT_BRICOLAGEGROTESQUE RCDATA "EmbeddedAssets/Fonts/BricolageGrotesque.ttf"
+IDR_FONT_DROIDSANS          RCDATA "EmbeddedAssets/Fonts/DroidSans.ttf"
+IDR_MEDIA_TMCOLORS          RCDATA "EmbeddedAssets/Media/tmcolors.png"
+IDR_MEDIA_SHARK             RCDATA "EmbeddedAssets/Media/shark.gif"

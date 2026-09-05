@@ -404,6 +404,7 @@
     <ClInclude Include="TwinkTrackmania\TwinkTrackmania.h" />
     <ClInclude Include="TwinkUi\TwinkUi.h" />
     <ClInclude Include="Utils.h" />
+    <ClInclude Include="Resource.h" />
     <ClInclude Include="Version.h" />
     <ClInclude Include="Modules\AudioVis\AudioVis.h" />
     <ClInclude Include="Modules\Blahaj\Blahaj.h" />
@@ -486,6 +487,7 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="kiero\minhook\dll_resources\MinHook.rc" />
+    <ResourceCompile Include="Twinkie.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

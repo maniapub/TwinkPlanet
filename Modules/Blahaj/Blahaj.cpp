@@ -1,10 +1,31 @@
 #define NOMINMAX
 #pragma execution_character_set("utf-8")
 #include "Blahaj.h"
-#include <ShlObj.h>
 #include <objbase.h>
 #include "../../TwinkToast/TwinkToast.h"
+#include "../../Utils.h"
+#include "../../Resource.h"
 #pragma comment(lib, "windowscodecs.lib")
+
+// Wraps a resource's raw bytes in a WIC-readable stream, so the decoder below can read
+// shark.gif straight out of the DLL's own memory instead of a file on disk.
+static bool CreateWicStreamFromResource(IWICImagingFactory* Factory, int ResourceId, IWICStream** OutStream)
+{
+    const unsigned char* Data = nullptr;
+    size_t Size = 0;
+    if (!LoadEmbeddedResource(ResourceId, &Data, &Size)) return false;
+
+    IWICStream* Stream = nullptr;
+    if (FAILED(Factory->CreateStream(&Stream))) return false;
+    if (FAILED(Stream->InitializeFromMemory((BYTE*)Data, (DWORD)Size)))
+    {
+        Stream->Release();
+        return false;
+    }
+
+    *OutStream = Stream;
+    return true;
+}
 
 // =============================================================================
 // D3D9 texture helper
@@ -177,21 +198,28 @@ void BlahajModule::Load(IDirect3DDevice9* dev)
         return;
     }
 
-    IWICBitmapDecoder* decoder = nullptr;
-    char docsPath[MAX_PATH] = {};
-    SHGetFolderPathA(nullptr, CSIDL_PERSONAL, nullptr, SHGFP_TYPE_CURRENT, docsPath);
-    std::string u8path = std::string(docsPath) + "\\TwinkPlanet\\media\\shark.gif";
-    int wn = MultiByteToWideChar(CP_ACP, 0, u8path.c_str(), -1, nullptr, 0);
-    std::wstring wpath(wn - 1, L'\0');
-    MultiByteToWideChar(CP_ACP, 0, u8path.c_str(), -1, wpath.data(), wn);
-
-    if (FAILED(factory->CreateDecoderFromFilename(wpath.c_str(), nullptr,
-               GENERIC_READ, WICDecodeMetadataCacheOnLoad, &decoder)))
+    // shark.gif is baked into the DLL as an RCDATA resource (see Twinkie.rc) rather than loaded
+    // from Documents\TwinkPlanet\media\ - a fresh install no longer needs that file placed there
+    // manually.
+    IWICStream* stream = nullptr;
+    if (!CreateWicStreamFromResource(factory, IDR_MEDIA_SHARK, &stream))
     {
-        m_ErrorMsg = "shark.gif not found";
-        Logger->PrintErrorArgs("[Blahaj] shark.gif missing at {}", u8path);
-        TwinkToast::Get().Push("[Blahaj] shark.gif missing from Documents\\TwinkPlanet\\media\\",
+        m_ErrorMsg = "shark.gif resource missing";
+        Logger->PrintError("[Blahaj] Embedded shark.gif resource could not be loaded.");
+        TwinkToast::Get().Push("[Blahaj] Embedded shark.gif resource could not be loaded.",
                                8.f, { 1.f, 0.6f, 0.2f, 1.f });
+        factory->Release();
+        if (comOwn) CoUninitialize();
+        return;
+    }
+
+    IWICBitmapDecoder* decoder = nullptr;
+    HRESULT decodeHr = factory->CreateDecoderFromStream(stream, nullptr, WICDecodeMetadataCacheOnLoad, &decoder);
+    stream->Release();
+    if (FAILED(decodeHr))
+    {
+        m_ErrorMsg = "Failed to decode shark.gif";
+        Logger->PrintError("[Blahaj] Failed to decode embedded shark.gif resource.");
         factory->Release();
         if (comOwn) CoUninitialize();
         return;
