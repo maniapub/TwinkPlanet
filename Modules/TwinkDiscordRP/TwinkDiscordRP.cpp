@@ -279,126 +279,23 @@ static std::string GetGameStateName(TwinkTrackmania* twinkie)
     return found ? GameStateName(rawState) : "";
 }
 
-// =============================================================================
-// Member-offset resolution via the game's own class reflection - ForeverRPC's real approach
-// (src/game.rs, resolve_member_offset_by_id()/resolve_member_offset_by_name()) rather than
-// trusting a hardcoded offset for "PlayerInfos". Calls the object's own GetClassInfo virtual
-// (vtable slot 2), then walks up to 20 levels of the class hierarchy's member-info arrays looking
-// for a match by numeric member ID (fast path) or by name (fallback) - the field offset the game
-// itself uses is more trustworthy than a guessed constant, and can differ between builds.
-// =============================================================================
-// MwMemberInfo field byte-offsets (Type=0, MemberId=4, Param=8, FieldOffset=12, Name=16, Flags=20,
-// Flags2=24) - read individually with TryRead<int>()/TryRead<uintptr_t>() rather than as one
-// struct, since TwinkTrackmania::TryRead<T>() needs an explicit instantiation per T back in
-// TwinkTrackmania.cpp, and a struct type local to this file can't be named from there.
-static constexpr uintptr_t kMwMemberInfoOffsetMemberId    = 4;
-static constexpr uintptr_t kMwMemberInfoOffsetFieldOffset = 12;
-static constexpr uintptr_t kMwMemberInfoOffsetName        = 16;
-static constexpr size_t    kMwMemberInfoSize              = 28;
-
-template <typename Predicate>
-static bool ResolveMemberOffset(TwinkTrackmania* twinkie, uintptr_t nod, Predicate matches, uintptr_t& outOffset)
-{
-    if (!nod || !twinkie->IsReadableMemory(nod, sizeof(uintptr_t))) return false;
-
-    uintptr_t vtable = 0;
-    if (!twinkie->TryRead<uintptr_t>(nod, vtable) || !vtable) return false;
-
-    uintptr_t getClassInfoFn = 0;
-    if (!twinkie->TryRead<uintptr_t>(vtable + 2 * sizeof(uintptr_t), getClassInfoFn) || !getClassInfoFn) return false;
-
-    // Calling a function pointer read from memory is inherently trusting that the vtable is
-    // intact - same trust level ForeverRPC's own implementation relies on, only reached once nod
-    // and its vtable slot have already been confirmed readable above.
-    using GetClassInfoFn = uintptr_t(__thiscall*)(uintptr_t);
-    uintptr_t classInfo = reinterpret_cast<GetClassInfoFn>(getClassInfoFn)(nod);
-
-    for (int depth = 0; depth < 20; depth++)
-    {
-        if (!classInfo || !twinkie->IsReadableMemory(classInfo, 0x28)) break;
-
-        uintptr_t paramInfos = 0;
-        int       paramCount = 0;
-        if (!twinkie->TryRead<uintptr_t>(classInfo + 0x20, paramInfos)) break;
-        if (!twinkie->TryRead<int>(classInfo + 0x24, paramCount)) break;
-
-        if (paramInfos && paramCount >= 0 && paramCount <= 512)
-        {
-            for (int idx = 0; idx < paramCount; idx++)
-            {
-                uintptr_t memberAddr = 0;
-                if (!twinkie->TryRead<uintptr_t>(paramInfos + (uintptr_t)idx * sizeof(uintptr_t), memberAddr)) continue;
-                if (!memberAddr || !twinkie->IsReadableMemory(memberAddr, kMwMemberInfoSize)) continue;
-
-                int fieldOffset = 0;
-                if (!twinkie->TryRead<int>(memberAddr + kMwMemberInfoOffsetFieldOffset, fieldOffset)) continue;
-                if (fieldOffset <= 0 || fieldOffset >= 0x10000) continue;
-
-                if (matches(twinkie, memberAddr))
-                {
-                    outOffset = (uintptr_t)fieldOffset;
-                    return true;
-                }
-            }
-        }
-
-        uintptr_t parentClassInfo = 0;
-        if (!twinkie->TryRead<uintptr_t>(classInfo + 0x08, parentClassInfo)) break;
-        classInfo = parentClassInfo;
-    }
-
-    return false;
-}
-
-static bool ResolveMemberOffsetById(TwinkTrackmania* twinkie, uintptr_t nod, int memberId, uintptr_t& outOffset)
-{
-    return ResolveMemberOffset(twinkie, nod,
-        [memberId](TwinkTrackmania* tw, uintptr_t memberAddr)
-        {
-            int actualId = 0;
-            return tw->TryRead<int>(memberAddr + kMwMemberInfoOffsetMemberId, actualId) && actualId == memberId;
-        }, outOffset);
-}
-
-static bool ResolveMemberOffsetByName(TwinkTrackmania* twinkie, uintptr_t nod, const char* name, uintptr_t& outOffset)
-{
-    return ResolveMemberOffset(twinkie, nod,
-        [name](TwinkTrackmania* tw, uintptr_t memberAddr) -> bool
-        {
-            uintptr_t namePtr = 0;
-            if (!tw->TryRead<uintptr_t>(memberAddr + kMwMemberInfoOffsetName, namePtr) || !namePtr) return false;
-
-            char nameBuf[64] = {};
-            for (size_t c = 0; c < sizeof(nameBuf) - 1; c++)
-            {
-                char ch = 0;
-                if (!tw->TryRead<char>(namePtr + c, ch)) return false;
-                nameBuf[c] = ch;
-                if (ch == '\0') break;
-            }
-            return strcmp(nameBuf, name) == 0;
-        }, outOffset);
-}
-
-// Numeric member ID for CGameCtnNetworkClientInfo::PlayerInfos, from ForeverRPC's own reverse
-// engineering. Tried first (fast, version-independent); "PlayerInfos" by name is the fallback if
-// the ID ever changes, and the hardcoded 0x2FC below is the last resort if reflection fails
-// entirely. Cached once resolved since the class layout doesn't change mid-session.
-static constexpr int kPlayerInfosMemberId = 0x0300f006;
-
+// This used to resolve the "PlayerInfos" field offset via the game's own class reflection
+// (calling the object's GetClassInfo virtual, then walking its member-info arrays) rather than
+// trusting a hardcoded offset. That reflection path is almost certainly what caused the
+// profile-select freeze: unlike every other read in this file (TryRead()/IsReadableMemory(),
+// which only ever inspect data), it actually CALLS a function pointer read out of memory - real
+// code execution inside the game process, every single frame until it first succeeds. Disabling
+// the state hook alone didn't fix the freeze (confirmed by testing), but this call is a much
+// closer match: it fires from RenderAnyways() every frame during exactly the pre-login window
+// where the network object is in a less-than-fully-initialized state, and unlike a bad data
+// read, a bad function-pointer call has no safety net - it can hang or corrupt state instead of
+// just failing cleanly. Replaced with the plain hardcoded offset (still only ever read through
+// TryRead()/IsReadableMemory(), never called into) so this file no longer executes any code it
+// didn't write itself.
 static uintptr_t GetPlayerInfosOffset(TwinkTrackmania* twinkie, uintptr_t network)
 {
-    static uintptr_t s_CachedOffset = 0;
-    if (s_CachedOffset) return s_CachedOffset;
-
-    uintptr_t offset = 0;
-    if (ResolveMemberOffsetById(twinkie, network, kPlayerInfosMemberId, offset) ||
-        ResolveMemberOffsetByName(twinkie, network, "PlayerInfos", offset))
-    {
-        s_CachedOffset = offset;
-        return offset;
-    }
-
+    (void)twinkie;
+    (void)network;
     return 0x2FC;
 }
 
@@ -868,6 +765,11 @@ void TwinkDiscordRPModule::UpdatePresence()
 
 void TwinkDiscordRPModule::RenderAnyways()
 {
+    // Used to force-disable until login, working around the profile-select freeze. That freeze's
+    // real cause was tracked down to GetPlayerInfosOffset()'s old reflection path making a live
+    // function-pointer call into the game every frame pre-login (see the comment there) - now
+    // fixed at the source, so Enabled no longer needs to be second-guessed here based on login
+    // state; it's just the user's actual toggle.
     if (!Enabled)
     {
         if (m_Connected) DisconnectPipe();
@@ -886,10 +788,11 @@ void TwinkDiscordRPModule::RenderAnyways()
     // right next to TMUnlimiter.dll), and Discord only ever shows
     // whichever app most recently updated its activity - there's no real "priority" to win, so
     // updating more often just means ours is more often the last one in and wins more often.
-    // Discord's own guidance is "no more than once every 15s"; 2.5s is more aggressive than that
-    // on purpose to compete with TMUnlimiter's own update loop.
+    // Discord's own guidance is "no more than once every 15s" for the HTTP API; that limit doesn't
+    // apply to the local IPC pipe, so this stays well under 1s specifically to out-race
+    // TMUnlimiter's own update loop, which was otherwise winning and clobbering ours.
     auto now = std::chrono::steady_clock::now();
-    if (std::chrono::duration<double>(now - m_LastUpdate).count() < 2.5) return;
+    if (std::chrono::duration<double>(now - m_LastUpdate).count() < 0.5) return;
     m_LastUpdate = now;
 
     UpdatePresence();
@@ -898,6 +801,7 @@ void TwinkDiscordRPModule::RenderAnyways()
 void TwinkDiscordRPModule::RenderMenuItem()
 {
     using namespace ImGui;
+
     if (MenuItem(ICON_FK_DISCORD_ALT " Discord Rich Presence", "", Enabled))
         Enabled = !Enabled;
 }

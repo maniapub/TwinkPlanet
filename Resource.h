@@ -8,5 +8,6 @@
 #define IDR_FONT_MANIAICONS         1002
 #define IDR_FONT_BRICOLAGEGROTESQUE 1003
 #define IDR_FONT_DROIDSANS          1004
+#define IDR_FONT_COMICNEUE          1007
 #define IDR_MEDIA_TMCOLORS          1005
 #define IDR_MEDIA_SHARK             1006

@@ -67,7 +67,7 @@ using WNDPROC = LRESULT(CALLBACK*)(HWND, UINT, WPARAM, LPARAM);
 using ResetFn = HRESULT(APIENTRY*)(LPDIRECT3DDEVICE9 pDevice, D3DPRESENT_PARAMETERS* pPresentationParameters);
 using PresentFn = long(__stdcall*)(LPDIRECT3DDEVICE9 pDevice, LPVOID, LPVOID, HWND, LPVOID);
 
-extern const char* g_FontNames[3];
+extern const char* g_FontNames[4];
 extern const char* g_ThemeNames[2];
 
 class TwinkUi
@@ -82,6 +82,7 @@ public:
     ImFont* FontMono = nullptr;
     ImFont* FontBricolageGrotesque = nullptr;
     ImFont* FontDroidSans = nullptr;
+    ImFont* FontComicNeue = nullptr;
     ImFont* SelectedFont = FontDroidSans;
     size_t FontIdx = 2;
     std::string FontName = "DroidSans";

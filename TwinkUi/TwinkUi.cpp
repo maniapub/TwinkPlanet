@@ -24,7 +24,7 @@ void TwinkUi::SettingsInit()
     Settings["Twinkie"]["Fullscreen windowed"].GetAsBool(&WantFullscreenWindowed);
     Settings["Twinkie"]["Positioning Lines"].GetAsBool(&EnablePositioningLines);
 
-    FontIdx = FontName == "BricolageGrotesque" ? 1 : FontName == "DroidSans" ? 2 : 0;
+    FontIdx = FontName == "BricolageGrotesque" ? 1 : FontName == "DroidSans" ? 2 : FontName == "ComicNeue" ? 3 : 0;
 
     RefreshConfigList();
 
@@ -337,6 +337,47 @@ void TwinkUi::InitFonts(ImGuiIO& ImIo)
         auto FontManiaIconsDroidSans = AddEmbeddedFont(ImIo.Fonts, IDR_FONT_MANIAICONS, DroidSansIconFontSize, &DroidSansIconCfg);
 
         if (FontManiaIconsDroidSans)
+        {
+            Logger.PrintInternal("Font \"ManiaIcons\" initialized.");
+        }
+        else
+        {
+            Logger.PrintError("Font \"ManiaIcons\" not initialized.");
+        }
+    }
+
+    bool SkipIconsComicNeue = false;
+
+    ImFontConfig ComicNeueCfg;
+    ComicNeueCfg.MergeMode = false;
+    ComicNeueCfg.Flags |= ImFontFlags_NoLoadError;
+
+    FontComicNeue = AddEmbeddedFont(ImIo.Fonts, IDR_FONT_COMICNEUE, 14.f * UiScale, &ComicNeueCfg);
+
+    if (FontComicNeue)
+    {
+        Logger.PrintInternal("Font \"ComicNeue\" initialized.");
+    }
+    else
+    {
+        Logger.PrintError("Font \"ComicNeue\" not initialized.");
+        SkipIconsComicNeue = true;
+    }
+
+    if (!SkipIconsComicNeue)
+    {
+        // Taken example from https://github.com/juliettef/IconFontCppHeaders?tab=readme-ov-file#example-code
+        float ComicNeueIconFontSize = (14.f * UiScale);
+
+        ImFontConfig ComicNeueIconCfg;
+        ComicNeueIconCfg.MergeMode = true;
+        ComicNeueIconCfg.PixelSnapH = true;
+        ComicNeueIconCfg.GlyphMinAdvanceX = ComicNeueIconFontSize;
+        ComicNeueIconCfg.Flags |= ImFontFlags_NoLoadError;
+
+        auto FontManiaIconsComicNeue = AddEmbeddedFont(ImIo.Fonts, IDR_FONT_MANIAICONS, ComicNeueIconFontSize, &ComicNeueIconCfg);
+
+        if (FontManiaIconsComicNeue)
         {
             Logger.PrintInternal("Font \"ManiaIcons\" initialized.");
         }
@@ -754,7 +795,7 @@ void TwinkUi::Render()
 
     if (SelectedFont) PopFont();
 
-    SelectedFont = (FontName == "BricolageGrotesque" or FontName == "") ? FontBricolageGrotesque : FontName == "DroidSans" ? FontDroidSans : FontMono;
+    SelectedFont = (FontName == "BricolageGrotesque" or FontName == "") ? FontBricolageGrotesque : FontName == "DroidSans" ? FontDroidSans : FontName == "ComicNeue" ? FontComicNeue : FontMono;
 }
 
 void TwinkUi::RenderSettings()

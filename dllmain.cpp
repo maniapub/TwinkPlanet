@@ -79,11 +79,12 @@ const char* g_NamesOfMwTypes[] =
 	"PROC"
 };
 
-const char* g_FontNames[3] =
+const char* g_FontNames[4] =
 {
 	"CascadiaMono",
 	"BricolageGrotesque",
-	"DroidSans"
+	"DroidSans",
+	"ComicNeue"
 };
 
 const char* g_ThemeNames[2] =
@@ -252,6 +253,21 @@ static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 	{
 		if (wParam == VK_F3 and !(lParam & 0xFF000000))
 			Twinkie.DoRender = !Twinkie.DoRender;
+	}
+
+	// A normal game exit terminates the process via ExitProcess() rather than a clean per-DLL
+	// unload, so DLL_PROCESS_DETACH (and this DLL's own static destructors, including TwinkUi's)
+	// are not guaranteed to run at all - Windows explicitly allows skipping them during process
+	// termination. WM_DESTROY on the game's own window fires reliably before that happens, so
+	// settings (including every module's dragged-window position) only ever persisted through the
+	// while-racing autosave timer or the manual "Save settings" button - anything changed since
+	// then (e.g. repositioning an overlay while just sitting in menus) was silently lost on a
+	// normal close, then reloaded as if it had "moved" back on the next launch.
+	if (uMsg == WM_DESTROY)
+	{
+		Twinkie.Logger.PrintInternal("Window closing - saving settings...");
+		Twinkie.SettingsSave();
+		Twinkie.Settings.Save();
 	}
 
 	if ((uMsg >= WM_KEYFIRST && uMsg <= WM_KEYLAST && ImIo.WantCaptureKeyboard) || (uMsg >= WM_MOUSEFIRST && uMsg <= WM_MOUSELAST && ImIo.WantCaptureMouse))

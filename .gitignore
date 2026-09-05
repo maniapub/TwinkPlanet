@@ -1,0 +1,16 @@
+# Build output
+Intermediates/
+Modloader/
+Debug/
+Release/
+x64/
+Win32/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sdf
+*.opensdf
+*.VC.db
+*.VC.VC.opendb
