@@ -57,6 +57,7 @@ private:
     std::thread       m_LookupThread;
     std::mutex        m_LookupMutex;
     std::atomic<bool> m_LookupResultReady{ false };
+    std::atomic<bool> m_LookupInProgress{ false }; // set for the thread's whole lifetime - see StartTmxLookup()
     std::string       m_LookupResultUrl;      // guarded by m_LookupMutex until picked up
     std::string       m_LookupResultMapName;  // guarded by m_LookupMutex - which map the result is for
     std::string       m_LookupForMapName;     // main-thread only: which map we last started a lookup for

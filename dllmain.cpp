@@ -263,7 +263,14 @@ static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 	// while-racing autosave timer or the manual "Save settings" button - anything changed since
 	// then (e.g. repositioning an overlay while just sitting in menus) was silently lost on a
 	// normal close, then reloaded as if it had "moved" back on the next launch.
-	if (uMsg == WM_DESTROY)
+	//
+	// Also save on WM_CLOSE, not just WM_DESTROY: WM_CLOSE fires first, the instant the window is
+	// asked to close (X button / Alt+F4 / a "quit" menu action), while WM_DESTROY only fires if
+	// the game's own handler actually goes on to call DestroyWindow(). If the game instead shows
+	// its own confirm dialog and then calls ExitProcess() directly on confirm - skipping
+	// DestroyWindow entirely - WM_DESTROY never arrives at all, silently reintroducing the exact
+	// same lost-position bug WM_DESTROY alone was meant to fix.
+	if (uMsg == WM_CLOSE || uMsg == WM_DESTROY)
 	{
 		Twinkie.Logger.PrintInternal("Window closing - saving settings...");
 		Twinkie.SettingsSave();

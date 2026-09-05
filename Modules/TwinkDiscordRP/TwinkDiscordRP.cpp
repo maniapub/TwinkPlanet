@@ -506,15 +506,27 @@ void TwinkDiscordRPModule::TmxLookupWorker(std::string mapName)
         }
     }
 
-    std::lock_guard<std::mutex> lock(m_LookupMutex);
-    m_LookupResultUrl     = foundUrl;
-    m_LookupResultMapName = mapName;
-    m_LookupResultReady   = true;
+    {
+        std::lock_guard<std::mutex> lock(m_LookupMutex);
+        m_LookupResultUrl     = foundUrl;
+        m_LookupResultMapName = mapName;
+        m_LookupResultReady   = true;
+    }
+    m_LookupInProgress = false; // last, so the main thread never sees this before the result above
 }
 
 void TwinkDiscordRPModule::StartTmxLookup(const std::string& mapName)
 {
-    if (m_LookupThread.joinable()) m_LookupThread.join();
+    // A previous lookup can still be in flight (tmnf.exchange/tmuf.exchange being slow, or just
+    // unresponsive) when the map changes again - joinable() alone can't tell "still running" from
+    // "finished, just needs cleanup", so calling join() unconditionally here used to block this
+    // (main/render) thread for however long that HTTP request took to time out, freezing the whole
+    // game. m_LookupInProgress makes that distinction: if a lookup is still running, skip starting
+    // a new one entirely this frame rather than waiting on it - the next map-name check will try
+    // again once it's actually done.
+    if (m_LookupInProgress.load()) return;
+    if (m_LookupThread.joinable()) m_LookupThread.join(); // safe: only reached once the flag says done
+    m_LookupInProgress = true;
     m_LookupForMapName = mapName;
     m_LookupThread = std::thread(&TwinkDiscordRPModule::TmxLookupWorker, this, mapName);
 }
