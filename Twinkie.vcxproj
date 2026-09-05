@@ -1,0 +1,493 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Modloader|Win32">
+      <Configuration>Modloader</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Modloader|x64">
+      <Configuration>Modloader</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Nations|Win32">
+      <Configuration>Nations</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Nations|x64">
+      <Configuration>Nations</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Premium|Win32">
+      <Configuration>Premium</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Premium|x64">
+      <Configuration>Premium</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{e43a687a-2577-4cd5-a45c-ea35254221e9}</ProjectGuid>
+    <RootNamespace>Twinkie</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Nations|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Modloader|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Premium|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Nations|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Modloader|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Premium|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v143</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Nations|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Modloader|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Premium|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Nations|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Modloader|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Premium|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Modloader|Win32'">
+    <TargetName>$(ProjectName)Modloader</TargetName>
+    <IntDir>Intermediates\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Premium|Win32'">
+    <TargetName>$(ProjectName)Modloader</TargetName>
+    <IntDir>Intermediates\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <TargetName>$(ProjectName)Modloader</TargetName>
+    <IntDir>Intermediates\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Nations|Win32'">
+    <TargetName>$(ProjectName)Nations</TargetName>
+    <TargetExt>.asi</TargetExt>
+    <IntDir>Intermediates\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Modloader|x64'">
+    <TargetName>$(ProjectName).asi</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Premium|x64'">
+    <TargetName>$(ProjectName).asi</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <TargetName>$(ProjectName).asi</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Nations|x64'">
+    <TargetName>$(ProjectName).asi</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Nations|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;TWINKIE_EXPORTS;BUILD_NATIONS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Modloader|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;BUILD_UNITED;BUILD_TMMC;TWINKIE_EXPORTS;BUILD_TMMC;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Premium|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;BUILD_UNITED;BUILD_TMMC;BUILD_PREMIUM;TWINKIE_EXPORTS;BUILD_TMMC;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;BUILD_UNITED;BUILD_TMMC;BUILD_PREMIUM;BUILD_DEBUG;TWINKIE_EXPORTS;BUILD_TMMC;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <InlineFunctionExpansion>Disabled</InlineFunctionExpansion>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <LinkTimeCodeGeneration>Default</LinkTimeCodeGeneration>
+    </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Nations|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;TWINKIE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Modloader|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;TWINKIE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Premium|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;TWINKIE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;TWINKIE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalOptions>/Zc:char8_t- %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableUAC>false</EnableUAC>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="GlyphTable\IconsForkAwesome.h" />
+    <ClInclude Include="GlyphTable\IconsKenney.h" />
+    <ClInclude Include="imgui-dx9\imconfig.h" />
+    <ClInclude Include="imgui-dx9\imgui.h" />
+    <ClInclude Include="imgui-dx9\imgui_impl_dx9.h" />
+    <ClInclude Include="imgui-dx9\imgui_impl_win32.h" />
+    <ClInclude Include="imgui-dx9\imgui_internal.h" />
+    <ClInclude Include="imgui-dx9\imstb_rectpack.h" />
+    <ClInclude Include="imgui-dx9\imstb_textedit.h" />
+    <ClInclude Include="imgui-dx9\imstb_truetype.h" />
+    <ClInclude Include="IModule.h" />
+    <ClInclude Include="kiero\kiero.h" />
+    <ClInclude Include="kiero\minhook\include\MinHook.h" />
+    <ClInclude Include="kiero\minhook\src\buffer.h" />
+    <ClInclude Include="kiero\minhook\src\hde\hde32.h" />
+    <ClInclude Include="kiero\minhook\src\hde\hde64.h" />
+    <ClInclude Include="kiero\minhook\src\hde\pstdint.h" />
+    <ClInclude Include="kiero\minhook\src\hde\table32.h" />
+    <ClInclude Include="kiero\minhook\src\hde\table64.h" />
+    <ClInclude Include="kiero\minhook\src\trampoline.h" />
+    <ClInclude Include="LuaEngine\include\lauxlib.h" />
+    <ClInclude Include="LuaEngine\include\lua.h" />
+    <ClInclude Include="LuaEngine\include\lua.hpp" />
+    <ClInclude Include="LuaEngine\include\luaconf.h" />
+    <ClInclude Include="LuaEngine\include\lualib.h" />
+    <ClInclude Include="LuaEngine\LuaEngine2.h" />
+    <ClInclude Include="Modules\About\About.h" />
+    <ClInclude Include="Modules\AlwaysOfficial\AlwaysOfficial.h" />
+    <ClInclude Include="Modules\DownloadServerMaps\DownloadServerMaps.h" />
+    <ClInclude Include="Modules\GhostEditor\GhostEditor.h" />
+    <ClInclude Include="Modules\GrindingStats\GrindingStats.h" />
+    <ClInclude Include="Modules\LuaConsole\LuaConsole.h" />
+    <ClInclude Include="Modules\MapValidator\MapValidator.h" />
+    <ClInclude Include="Modules\SplitSpeeds\SplitSpeeds.h" />
+    <ClInclude Include="Modules\StadiumTrailsPatch\StadiumTrailsPatch.h" />
+    <ClInclude Include="Modules\Telemetry\Telemetry.h" />
+    <ClInclude Include="SettingMgr\SettingMgr.h" />
+    <ClInclude Include="Telemetry.h" />
+    <ClInclude Include="minhook\buffer.h" />
+    <ClInclude Include="mINI\ini.h" />
+    <ClInclude Include="Modules\Dashboard\DashboardInputs.h" />
+    <ClInclude Include="Modules\Dashboard\DashboardTacho.h" />
+    <ClInclude Include="Modules\Dashboard\DashboardGears.h" />
+    <ClInclude Include="Modules\Medals\Medals.h" />
+    <ClInclude Include="Modules\PlayerInfo\PlayerInfo.h" />
+    <ClInclude Include="Modules\Tweaker\Tweaker.h" />
+    <ClInclude Include="nvg-dx9\fontstash.h" />
+    <ClInclude Include="nvg-dx9\stb_image.h" />
+    <ClInclude Include="nvg-dx9\stb_truetype.h" />
+    <ClInclude Include="Release\Settings.h" />
+    <ClInclude Include="TmForeverLib\TmForever.h" />
+    <ClInclude Include="TrackMania.h" />
+    <ClInclude Include="TwinkIo\TwinkIo.h" />
+    <ClInclude Include="TwinkLogs.h" />
+    <ClInclude Include="TwinkToast\TwinkToast.h" />
+    <ClInclude Include="TwinkLuaMgr\ILuaModule.h" />
+    <ClInclude Include="TwinkLuaMgr\TwinkLuaMgr.h" />
+    <ClInclude Include="TwinkTrackmania\TwinkTrackmania.h" />
+    <ClInclude Include="TwinkUi\TwinkUi.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="Version.h" />
+    <ClInclude Include="Modules\AudioVis\AudioVis.h" />
+    <ClInclude Include="Modules\Blahaj\Blahaj.h" />
+    <ClInclude Include="Modules\CheckpointCounter\CheckpointCounter.h" />
+    <ClInclude Include="Modules\ClockSessionTimer\ClockSessionTimer.h" />
+    <ClInclude Include="Modules\CopperTracker\CopperTracker.h" />
+    <ClInclude Include="Modules\Image\Image.h" />
+    <ClInclude Include="Modules\LSD\LSD.h" />
+    <ClInclude Include="Modules\PerformanceOverlay\PerformanceOverlay.h" />
+    <ClInclude Include="Modules\Randomizer\Randomizer.h" />
+    <ClInclude Include="Modules\TwinkDiscordRP\TwinkDiscordRP.h" />
+    <ClInclude Include="Modules\MediaControls\MediaControls.h" />
+    <ClInclude Include="Modules\Fireworks\Fireworks.h" />
+    <ClInclude Include="Modules\GamingMode\GamingMode.h" />
+    <ClInclude Include="Modules\Colors\Colors.h" />
+    <ClInclude Include="Modules\WheelIndicators\WheelIndicators.h" />
+    <ClInclude Include="Modules\NoDistanceFog\NoDistanceFog.h" />
+    <ClInclude Include="Modules\LocalReplays\LocalReplays.h" />
+    <ClInclude Include="Modules\TmxBrowser\TmxBrowser.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="imgui-dx9\imgui.cpp" />
+    <ClCompile Include="imgui-dx9\imgui_demo.cpp" />
+    <ClCompile Include="imgui-dx9\imgui_draw.cpp" />
+    <ClCompile Include="imgui-dx9\imgui_impl_dx9.cpp" />
+    <ClCompile Include="imgui-dx9\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui-dx9\imgui_tables.cpp" />
+    <ClCompile Include="imgui-dx9\imgui_widgets.cpp" />
+    <ClCompile Include="kiero\kiero.cpp" />
+    <ClCompile Include="kiero\minhook\src\buffer.c" />
+    <ClCompile Include="kiero\minhook\src\hde\hde32.c" />
+    <ClCompile Include="kiero\minhook\src\hde\hde64.c" />
+    <ClCompile Include="kiero\minhook\src\hook.c" />
+    <ClCompile Include="kiero\minhook\src\trampoline.c" />
+    <ClCompile Include="Modules\About\About.cpp" />
+    <ClCompile Include="Modules\AlwaysOfficial\AlwaysOfficial.cpp" />
+    <ClCompile Include="Modules\AudioVis\AudioVis.cpp" />
+    <ClCompile Include="Modules\Blahaj\Blahaj.cpp" />
+    <ClCompile Include="Modules\CheckpointCounter\CheckpointCounter.cpp" />
+    <ClCompile Include="Modules\ClockSessionTimer\ClockSessionTimer.cpp" />
+    <ClCompile Include="Modules\CopperTracker\CopperTracker.cpp" />
+    <ClCompile Include="Modules\Image\Image.cpp" />
+    <ClCompile Include="Modules\LSD\LSD.cpp" />
+    <ClCompile Include="Modules\PerformanceOverlay\PerformanceOverlay.cpp" />
+    <ClCompile Include="Modules\Randomizer\Randomizer.cpp" />
+    <ClCompile Include="Modules\TwinkDiscordRP\TwinkDiscordRP.cpp" />
+    <ClCompile Include="Modules\MediaControls\MediaControls.cpp" />
+    <ClCompile Include="Modules\Fireworks\Fireworks.cpp" />
+    <ClCompile Include="Modules\GamingMode\GamingMode.cpp" />
+    <ClCompile Include="Modules\Colors\Colors.cpp" />
+    <ClCompile Include="Modules\WheelIndicators\WheelIndicators.cpp" />
+    <ClCompile Include="Modules\NoDistanceFog\NoDistanceFog.cpp" />
+    <ClCompile Include="Modules\TmxBrowser\TmxBrowser.cpp" />
+    <ClCompile Include="Modules\LocalReplays\LocalReplays.cpp" />
+    <ClCompile Include="Modules\Dashboard\DashboardGears.cpp" />
+    <ClCompile Include="Modules\Dashboard\DashboardInputs.cpp" />
+    <ClCompile Include="Modules\Dashboard\DashboardTacho.cpp" />
+    <ClCompile Include="Modules\DownloadServerMaps\DownloadServerMaps.cpp" />
+    <ClCompile Include="Modules\GhostEditor\GhostEditor.cpp" />
+    <ClCompile Include="Modules\GrindingStats\GrindingStats.cpp" />
+    <ClCompile Include="Modules\LuaConsole\LuaConsole.cpp" />
+    <ClCompile Include="Modules\MapValidator\MapValidator.cpp" />
+    <ClCompile Include="Modules\Medals\Medals.cpp" />
+    <ClCompile Include="Modules\PlayerInfo\PlayerInfo.cpp" />
+    <ClCompile Include="Modules\SplitSpeeds\SplitSpeeds.cpp" />
+    <ClCompile Include="Modules\StadiumTrailsPatch\StadiumTrailsPatch.cpp" />
+    <ClCompile Include="Modules\Telemetry\Telemetry.cpp" />
+    <ClCompile Include="Modules\Tweaker\Tweaker.cpp" />
+    <ClCompile Include="SettingMgr\SettingMgr.cpp" />
+    <ClCompile Include="TwinkIo\TwinkIo.cpp" />
+    <ClCompile Include="TwinkLuaMgr\TwinkLuaMgr.cpp" />
+    <ClCompile Include="TwinkToast\TwinkToast.cpp" />
+    <ClCompile Include="TwinkTrackmania\TwinkTrackmania.cpp" />
+    <ClCompile Include="TwinkUi\TwinkUi.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="kiero\minhook\dll_resources\MinHook.def" />
+    <None Include="TmForeverLib\TmForever.def" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="kiero\minhook\dll_resources\MinHook.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
