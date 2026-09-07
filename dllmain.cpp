@@ -275,6 +275,12 @@ static LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 		Twinkie.Logger.PrintInternal("Window closing - saving settings...");
 		Twinkie.SettingsSave();
 		Twinkie.Settings.Save();
+
+		// Also clear the Discord activity right away instead of just letting the pipe handle close
+		// as a side effect of process teardown - Discord's own reconnect/timeout handling can take
+		// a noticeable while to notice a dead connection and blank the status, which read as
+		// "Discord still shows me playing minutes after I closed the game."
+		if (Twinkie.TwinkDiscordRPMod) Twinkie.TwinkDiscordRPMod->DisconnectPipe();
 	}
 
 	if ((uMsg >= WM_KEYFIRST && uMsg <= WM_KEYLAST && ImIo.WantCaptureKeyboard) || (uMsg >= WM_MOUSEFIRST && uMsg <= WM_MOUSELAST && ImIo.WantCaptureMouse))

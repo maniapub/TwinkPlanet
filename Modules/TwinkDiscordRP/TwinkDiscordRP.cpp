@@ -615,6 +615,20 @@ bool TwinkDiscordRPModule::ConnectPipe()
 
 void TwinkDiscordRPModule::DisconnectPipe()
 {
+    // Explicitly clear the activity before closing the handle, rather than just relying on Discord
+    // to notice the pipe died: on a normal close the OS closes every handle anyway (that part of
+    // process cleanup happens even under ExitProcess(), unlike DLL_PROCESS_DETACH), but Discord's
+    // own reconnect/timeout handling can take a while to notice and blank the status - "still
+    // showing as Playing minutes after quitting" was exactly that gap. A real SET_ACTIVITY with a
+    // null activity clears it immediately instead of waiting on that timeout.
+    if (m_Connected)
+    {
+        std::string nonce = "twinkplanet-" + std::to_string(++m_NonceCounter);
+        std::string payload = "{\"cmd\":\"SET_ACTIVITY\",\"args\":{\"pid\":" + std::to_string(GetCurrentProcessId()) +
+            ",\"activity\":null},\"nonce\":\"" + nonce + "\"}";
+        SendFrame(kIpcOpFrame, payload);
+    }
+
     if (m_Pipe)
     {
         CloseHandle((HANDLE)m_Pipe);

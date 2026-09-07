@@ -38,6 +38,12 @@ public:
     virtual void SettingsSave(SettingMgr& Settings)  override;
     virtual bool HasSettings()    override { return true; }
 
+    // Called explicitly from dllmain's WM_CLOSE/WM_DESTROY handler (via TwinkUi's
+    // TwinkDiscordRPMod pointer) so the Discord activity is cleared immediately on a normal game
+    // close, rather than relying on this object's own destructor - which, like every other static
+    // destructor in this DLL, isn't guaranteed to run at all under ExitProcess().
+    void DisconnectPipe();
+
 private:
     RandomizerModule* m_Randomizer = nullptr;
 
@@ -67,7 +73,6 @@ private:
     void TmxLookupWorker(std::string mapName);
 
     bool ConnectPipe();
-    void DisconnectPipe();
     bool SendFrame(unsigned int opcode, const std::string& json);
     void UpdatePresence();
 
