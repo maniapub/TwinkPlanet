@@ -203,6 +203,24 @@ static long __stdcall hkPresent(LPDIRECT3DDEVICE9 pDevice, LPVOID A, LPVOID B, H
 		InitImGui(pDevice);
 		Twinkie.Initialized = true;
 		SetImGuiContext(ImGui::GetCurrentContext());
+
+		// Exclusive fullscreen breaks click delivery to this overlay (hover still works, clicks
+		// don't). "Fullscreen Windowed" already patches around it but it's opt-in - no good if
+		// clicks are already dead. Auto-enable it here so nobody has to click anything first.
+		if (!Twinkie.WantFullscreenWindowed)
+		{
+			IDirect3DSwapChain9* pSwapChain = nullptr;
+			if (pDevice->GetSwapChain(0, &pSwapChain) == D3D_OK && pSwapChain)
+			{
+				D3DPRESENT_PARAMETERS pp{};
+				if (pSwapChain->GetPresentParameters(&pp) == D3D_OK && !pp.Windowed)
+				{
+					Twinkie.Logger.PrintInternal("Exclusive fullscreen detected - enabling Fullscreen Windowed.");
+					Twinkie.WantFullscreenWindowed = true;
+				}
+				pSwapChain->Release();
+			}
+		}
 	}
 
 	IDirect3DStateBlock9* pStateBlock = NULL;

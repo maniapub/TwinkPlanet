@@ -561,6 +561,23 @@ bool TwinkDiscordRPModule::SendFrame(unsigned int opcode, const std::string& jso
     return true;
 }
 
+// Plain ReadFile() on a pipe has no timeout - if whatever's on the other end never replies, this
+// hangs the render thread forever. Poll with PeekNamedPipe (non-blocking) until the bytes are
+// actually there before reading for real.
+static bool WaitForPipeData(HANDLE pipe, DWORD neededBytes, DWORD timeoutMs)
+{
+    auto start = std::chrono::steady_clock::now();
+    for (;;)
+    {
+        DWORD available = 0;
+        if (!PeekNamedPipe(pipe, NULL, 0, NULL, &available, NULL)) return false;
+        if (available >= neededBytes) return true;
+        if (std::chrono::duration<double, std::milli>(std::chrono::steady_clock::now() - start).count() >= timeoutMs)
+            return false;
+        Sleep(10);
+    }
+}
+
 bool TwinkDiscordRPModule::ConnectPipe()
 {
     for (int i = 0; i < 10; i++)
@@ -578,11 +595,11 @@ bool TwinkDiscordRPModule::ConnectPipe()
             continue;
         }
 
-        // Read the handshake response (READY event) to confirm Discord actually accepted us -
-        // without this we'd report "connected" even for a pipe that immediately rejects us.
+        // Read the handshake response (READY event) to confirm Discord actually accepted us.
         unsigned int header[2] = {};
         DWORD readBytes = 0;
-        if (!ReadFile(pipe, header, sizeof(header), &readBytes, NULL) || readBytes != sizeof(header))
+        if (!WaitForPipeData(pipe, sizeof(header), 1500) ||
+            !ReadFile(pipe, header, sizeof(header), &readBytes, NULL) || readBytes != sizeof(header))
         {
             DisconnectPipe();
             continue;
@@ -591,7 +608,8 @@ bool TwinkDiscordRPModule::ConnectPipe()
         std::string response(header[1], '\0');
         if (header[1] > 0)
         {
-            if (!ReadFile(pipe, response.data(), header[1], &readBytes, NULL) || readBytes != header[1])
+            if (!WaitForPipeData(pipe, header[1], 1500) ||
+                !ReadFile(pipe, response.data(), header[1], &readBytes, NULL) || readBytes != header[1])
             {
                 DisconnectPipe();
                 continue;
